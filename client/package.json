@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier . --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "husky install && cp env.example .env"
   },
   "lint-staged": {
     "**/*": [
