@@ -7,6 +7,7 @@ import { ListTasksHandler } from './handlers/task/list-tasks.handler';
 import { TaskController } from './controllers/tasks.controller';
 import { getSummaryHandler } from './handlers/task/get-summary.handler';
 import { TaskModule } from '../task/task.module';
+import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { AppConfigModule } from '../app-config/app-config.module';
 import { ReorderTasksHandler } from './handlers/task/reorder-tasks.handler';
 
@@ -22,6 +23,7 @@ const taskHandlers = [
 
 @Module({
   imports: [AppConfigModule, TaskModule],
-  providers: [...taskHandlers],
+  controllers: [TaskController],
+  providers: [JwtStrategy, ...taskHandlers],
 })
 export class HttpModule {}
