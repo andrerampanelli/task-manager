@@ -1,4 +1,4 @@
-import { CreateTask, Task } from '@/types/task.type';
+import { CreateTask, SummaryData, Task } from '@/types/task.type';
 import { BaseApi } from './base.api';
 
 export class TaskApi extends BaseApi {
@@ -54,5 +54,11 @@ export class TaskApi extends BaseApi {
         Authorization: `Bearer ${this.token}`
       }
     );
+  }
+
+  async getSummaryData(): Promise<SummaryData> {
+    return this.get<SummaryData>('/tasks/summary', {
+      Authorization: `Bearer ${this.token}`
+    });
   }
 }
