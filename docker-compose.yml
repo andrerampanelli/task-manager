@@ -19,19 +19,19 @@ services:
       DATABASE_URI: mongodb://root:password@db:27017
     command: "npm run start:debug"
 
-  # client:
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     NEXT_API_URL: http://localhost:3000
-  #   env_file:
-  #     - ./client/.env
-  #   volumes:
-  #     - ./client:/app
-  #   restart: always
-  #   ports:
-  #     - 80:3000
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      NEXT_API_URL: http://server:4000
+    env_file:
+      - ./client/.env
+    volumes:
+      - ./client:/app
+    restart: always
+    ports:
+      - 3000:3000
 
   db:
     image: mongo:7.0.12
