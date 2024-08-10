@@ -7,6 +7,11 @@ import { ListTasksHandler } from './handlers/task/list-tasks.handler';
 import { TaskController } from './controllers/tasks.controller';
 import { getSummaryHandler } from './handlers/task/get-summary.handler';
 import { TaskModule } from '../task/task.module';
+import { SignupHandler } from './handlers/auth/signup.handler';
+import { LoginHandler } from './handlers/auth/login.handler';
+import { LogoutHandler } from './handlers/auth/logout.handler';
+import { AuthModule } from '../auth/auth.module';
+import { AuthController } from './controllers/auth.controller';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { AppConfigModule } from '../app-config/app-config.module';
 import { ReorderTasksHandler } from './handlers/task/reorder-tasks.handler';
@@ -21,9 +26,11 @@ const taskHandlers = [
   ReorderTasksHandler,
 ];
 
+const authHandlers = [SignupHandler, LoginHandler, LogoutHandler];
+
 @Module({
-  imports: [AppConfigModule, TaskModule],
-  controllers: [TaskController],
-  providers: [JwtStrategy, ...taskHandlers],
+  imports: [AppConfigModule, TaskModule, AuthModule],
+  controllers: [TaskController, AuthController],
+  providers: [JwtStrategy, ...taskHandlers, ...authHandlers],
 })
 export class HttpModule {}
