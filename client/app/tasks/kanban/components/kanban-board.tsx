@@ -22,10 +22,10 @@ import { BoardColumn, BoardContainer } from './board-column';
 import { TaskCard } from './task-card';
 import { Task, TaskStatus } from '@/types/task.type';
 import { useTasks, useTasksDispatch } from '@/hooks/useTasks';
-import { handleListTasks } from '../layout/Task/task-provider';
 import { useSession } from 'next-auth/react';
 import { TaskApi } from '@/services/tasks.api';
-import { toast } from '../ui/use-toast';
+import { handleListKanbanTasks } from '@/components/layout/Task/task-provider';
+import { toast } from '@/components/ui/use-toast';
 
 const defaultCols = [
   {
@@ -72,8 +72,8 @@ export function KanbanBoard() {
     if (!session.user.token) return;
 
     const fetchTasks = async () => {
-      const tasks = await taskApi.getTasks();
-      handleListTasks(dispatch, tasks);
+      const tasks = await taskApi.getKanbanTasks();
+      handleListKanbanTasks(dispatch, tasks);
     };
 
     fetchTasks();
@@ -245,7 +245,7 @@ export function KanbanBoard() {
         taskApi
           .reorderTasks(order)
           .then((data) => {
-            handleListTasks(dispatch, data);
+            handleListKanbanTasks(dispatch, data);
           })
           .catch((error) => {
             toast({
@@ -259,7 +259,7 @@ export function KanbanBoard() {
       taskApi
         .reorderTasks(order)
         .then((data) => {
-          handleListTasks(dispatch, data);
+          handleListKanbanTasks(dispatch, data);
         })
         .catch((error) => {
           toast({
@@ -283,7 +283,7 @@ export function KanbanBoard() {
         taskApi
           .reorderTasks(order)
           .then((data) => {
-            handleListTasks(dispatch, data);
+            handleListKanbanTasks(dispatch, data);
           })
           .catch((error) => {
             toast({

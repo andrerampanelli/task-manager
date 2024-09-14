@@ -1,4 +1,3 @@
-import { AreaGraph } from '@/components/charts/area-graph';
 import { TasksByStatusByMonthAreaGraph } from '@/components/charts/task/TasksByStatusByMonthAreaGraph';
 import { TasksCreatedByMonthBarGraphBarGraph } from '@/components/charts/task/TasksCreatedByMonthBarGraph';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

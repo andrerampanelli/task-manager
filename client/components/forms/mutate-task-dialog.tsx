@@ -10,7 +10,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '../ui/textarea';
 import { useTasksDispatch } from '@/hooks/useTasks';
-import { TaskCommands } from '../layout/Task/task-provider';
+import {
+  handleAddTask,
+  handleChangeTask,
+  TaskCommands
+} from '../layout/Task/task-provider';
 import { z } from 'zod';
 import { endOfYesterday, startOfToday } from 'date-fns';
 import { useForm } from 'react-hook-form';
@@ -20,6 +24,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage
 } from '../ui/form';
 import { DatePicker } from '../ui/date-picker';
@@ -28,11 +33,32 @@ import { TaskApi } from '@/services/tasks.api';
 import { Task, TaskStatus } from '@/types/task.type';
 import { useState } from 'react';
 import { Label } from '../ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '../ui/select';
 
-const MutateTaskFormSchema = z.object({
+const CreateTaskFormSchema = z.object({
   title: z.string().max(100),
   description: z.string().max(500),
-  dueDate: z.date().min(endOfYesterday())
+  dueDate: z.date().min(endOfYesterday()),
+  status: z
+    .enum([TaskStatus.PENDING, TaskStatus.COMPLETED, TaskStatus.IN_PROGRESS])
+    .default(TaskStatus.PENDING)
+});
+
+const ModifyTaskFormSchema = z.object({
+  title: z.string().max(100),
+  description: z.string().max(500),
+  dueDate: z.date(),
+  status: z.enum([
+    TaskStatus.PENDING,
+    TaskStatus.COMPLETED,
+    TaskStatus.IN_PROGRESS
+  ])
 });
 
 type MutateTaskDialogProps = {
@@ -50,19 +76,22 @@ export default function MutateTaskDialog({
   const dispatch = useTasksDispatch();
   const { data: session } = useSession();
 
-  const form = useForm<z.infer<typeof MutateTaskFormSchema>>({
-    resolver: zodResolver(MutateTaskFormSchema),
+  const schema = task?._id ? ModifyTaskFormSchema : CreateTaskFormSchema;
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       title: task?.title || '',
       description: task?.description || '',
-      dueDate: task ? new Date(task.dueDate) : startOfToday()
+      dueDate: task ? new Date(task.dueDate) : startOfToday(),
+      status: task?.status || TaskStatus.PENDING
     }
   });
 
-  const onSubmit = (data: z.infer<typeof MutateTaskFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof schema>) => {
     if (!session) return;
     if (!session.user.token) return;
-    const { title, description, dueDate } = data;
+    const { title, description, dueDate, status } = data;
     const taskApi = new TaskApi(session.user.token);
 
     if (event === TaskCommands.Add) {
@@ -71,11 +100,11 @@ export default function MutateTaskDialog({
           title,
           description,
           dueDate,
-          status: TaskStatus.PENDING,
+          status,
           position: 99
         })
         .then((task) => {
-          dispatch({ type: TaskCommands.Add, payload: task });
+          handleAddTask(dispatch, task);
           setOpen(false);
         });
       return;
@@ -86,12 +115,13 @@ export default function MutateTaskDialog({
           _id: task._id,
           title,
           description,
-          dueDate
+          dueDate,
+          status
         })
         .then((task) => {
-          dispatch({
-            type: TaskCommands.Update,
-            payload: { id: task._id, task: task }
+          handleChangeTask(dispatch, {
+            id: task._id,
+            task: task
           });
           setOpen(false);
         });
@@ -142,6 +172,40 @@ export default function MutateTaskDialog({
                         className="col-span-4"
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <div className="grid items-center gap-4">
+                  <FormItem className="flex flex-col">
+                    <FormLabel htmlFor={field.name}>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={TaskStatus.PENDING}>
+                          {TaskStatus.PENDING}
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.IN_PROGRESS}>
+                          {TaskStatus.IN_PROGRESS}
+                        </SelectItem>
+                        <SelectItem value={TaskStatus.COMPLETED}>
+                          {TaskStatus.COMPLETED}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </div>

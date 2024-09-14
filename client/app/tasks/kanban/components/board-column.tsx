@@ -1,12 +1,12 @@
-import { useDndContext, type UniqueIdentifier } from '@dnd-kit/core';
+import { type UniqueIdentifier } from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { useMemo } from 'react';
-import { Card, CardContent, CardHeader } from '../ui/card';
 import { TaskCard } from './task-card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Task } from '@/types/task.type';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export interface Column {
   id: UniqueIdentifier;
@@ -31,14 +31,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
     return tasks.map((task) => task._id);
   }, [tasks]);
 
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({
+  const { setNodeRef, transform, transition, isDragging } = useSortable({
     id: column.id,
     data: {
       type: 'Column',

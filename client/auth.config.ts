@@ -66,8 +66,6 @@ const authConfig: NextAuthConfig = {
             token: auth?.token
           };
 
-          console.log('user', user);
-
           if (user) {
             return user;
           } else {

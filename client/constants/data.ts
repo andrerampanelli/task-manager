@@ -9,7 +9,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Kanban',
-    href: '/dashboard/kanban',
+    href: '/tasks/kanban',
     icon: 'kanban',
     label: 'kanban'
   }

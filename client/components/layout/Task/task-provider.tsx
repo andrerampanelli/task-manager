@@ -20,23 +20,23 @@ type ActionMap<M extends { [index: string]: any }> = {
 };
 
 export enum TaskCommands {
-  Create = 'CREATE_TASK',
   Update = 'UPDATE_TASK',
   Delete = 'DELETE_TASK',
   Reorder = 'REORDER_TASKS',
   List = 'LIST_TASKS',
+  Kanban = 'KANBAN',
   Add = 'ADD_TASK'
 }
 
 type TaskPayload = {
-  [TaskCommands.Create]: Partial<Task>;
   [TaskCommands.Update]: {
     id: string;
-    task: Partial<Task>;
+    task: Task;
   };
   [TaskCommands.Delete]: Task;
   [TaskCommands.Reorder]: Task[];
   [TaskCommands.List]: Task[];
+  [TaskCommands.Kanban]: Task[];
   [TaskCommands.Add]: Task;
 };
 
@@ -45,22 +45,22 @@ export type TaskActions = ActionMap<TaskPayload>[keyof ActionMap<TaskPayload>];
 export const tasksReducer = (state: Task[], action: TaskActions): Task[] => {
   switch (action.type) {
     case TaskCommands.Add: {
-      return uniqBy([...state, action.payload], '_id');
+      return uniqBy([action.payload, ...state], '_id');
     }
     case TaskCommands.List: {
       return uniqBy([...action.payload], '_id');
     }
-    case TaskCommands.Create: {
-      return [...state];
-    }
     case TaskCommands.Update: {
-      return [...state];
+      return uniqBy([action.payload.task, ...state], '_id');
     }
     case TaskCommands.Delete: {
       return state.filter((task) => task._id !== action.payload._id);
     }
     case TaskCommands.Reorder: {
       return [...action.payload];
+    }
+    case TaskCommands.Kanban: {
+      return uniqBy([...action.payload], '_id');
     }
   }
   return state;
@@ -85,10 +85,10 @@ export const TasksProvider: React.FC<Props> = ({ children }) => {
 
 export function handleAddTask(
   dispatch: Dispatch<TaskActions>,
-  data: TaskPayload[TaskCommands.Create]
+  data: TaskPayload[TaskCommands.Add]
 ) {
   dispatch({
-    type: TaskCommands.Create,
+    type: TaskCommands.Add,
     payload: data
   });
 }
@@ -109,6 +109,16 @@ export function handleDeleteTask(
 ) {
   dispatch({
     type: TaskCommands.Delete,
+    payload: data
+  });
+}
+
+export async function handleListKanbanTasks(
+  dispatch: Dispatch<TaskActions>,
+  data: Task[]
+) {
+  dispatch({
+    type: TaskCommands.Reorder,
     payload: data
   });
 }

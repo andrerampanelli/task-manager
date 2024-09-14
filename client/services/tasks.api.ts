@@ -61,4 +61,10 @@ export class TaskApi extends BaseApi {
       Authorization: `Bearer ${this.token}`
     });
   }
+
+  async getKanbanTasks(): Promise<Task[]> {
+    return this.get<Task[]>('/tasks/kanban', {
+      Authorization: `Bearer ${this.token}`
+    });
+  }
 }

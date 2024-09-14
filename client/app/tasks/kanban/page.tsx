@@ -1,16 +1,16 @@
 'use client';
 
-import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { KanbanBoard } from '@/components/kanban/kanban-board';
-import MutateTaskDialog from '@/components/kanban/mutate-task-dialog';
+import { Breadcrumbs } from '@/components/breadcrumbs';
+import MutateTaskDialog from '@/components/forms/mutate-task-dialog';
 import PageContainer from '@/components/layout/page-container';
 import { TaskCommands } from '@/components/layout/Task/task-provider';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
+import { KanbanBoard } from './components/kanban-board';
 
 const breadcrumbItems = [
-  { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Kanban', link: '/dashboard/kanban' }
+  { title: 'Tasks', link: '/tasks' },
+  { title: 'Kanban', link: '/tasks/kanban' }
 ];
 
 export default function page() {

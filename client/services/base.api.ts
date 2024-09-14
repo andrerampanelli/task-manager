@@ -21,7 +21,7 @@ export class BaseApi {
       throw new ApiHttpException(
         response.status,
         response.statusText,
-        body.message.join(', '),
+        body.message.toString(),
         body.timestamp,
         body.path,
         body.method

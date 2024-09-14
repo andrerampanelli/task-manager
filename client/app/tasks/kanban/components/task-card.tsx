@@ -5,10 +5,10 @@ import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
 import { EditIcon, GripVertical, TrashIcon } from 'lucide-react';
 import { Task } from '@/types/task.type';
-import MutateTaskDialog from './mutate-task-dialog';
-import { TaskCommands } from '../layout/Task/task-provider';
 import { differenceInDays, format, startOfDay, startOfToday } from 'date-fns';
-import DeleteTaskDialog from './delete-task-dialog';
+import { TaskCommands } from '@/components/layout/Task/task-provider';
+import MutateTaskDialog from '@/components/forms/mutate-task-dialog';
+import DeleteTaskDialog from '@/components/forms/delete-task-dialog';
 
 interface TaskCardProps {
   task: Task;
