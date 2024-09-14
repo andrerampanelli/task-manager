@@ -15,6 +15,7 @@ import { AuthController } from './controllers/auth.controller';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { AppConfigModule } from '../app-config/app-config.module';
 import { ReorderTasksHandler } from './handlers/task/reorder-tasks.handler';
+import { ListKanbanTasksHandler } from './handlers/task/list-kanban-tasks.handler';
 
 const taskHandlers = [
   CreateTaskHandler,
@@ -24,6 +25,7 @@ const taskHandlers = [
   ListTasksHandler,
   getSummaryHandler,
   ReorderTasksHandler,
+  ListKanbanTasksHandler,
 ];
 
 const authHandlers = [SignupHandler, LoginHandler, LogoutHandler];

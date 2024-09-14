@@ -22,6 +22,7 @@ import { UserContext } from 'src/common/user.context';
 import { User } from 'src/modules/auth/schema/user.schema';
 import { ReorderTasksDto } from 'src/modules/task/dto/reorder-tasks.dto';
 import { ReorderTasksHandler } from '../handlers/task/reorder-tasks.handler';
+import { ListKanbanTasksHandler } from '../handlers/task/list-kanban-tasks.handler';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('tasks')
@@ -34,11 +35,17 @@ export class TaskController {
     private readonly editTaskHandler: EditTaskHandler,
     private readonly deleteTaskHandler: DeleteTaskHandler,
     private readonly reorderTasksHandler: ReorderTasksHandler,
+    private readonly listKanbanTasksHandler: ListKanbanTasksHandler,
   ) {}
 
   @Get('summary')
   getSummary() {
     return this.getSummaryHandler.handle();
+  }
+
+  @Get('kanban')
+  listTasksKanban(): Promise<Task[]> {
+    return this.listKanbanTasksHandler.handle();
   }
 
   @Post('reorder')

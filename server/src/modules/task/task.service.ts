@@ -13,7 +13,7 @@ export class TaskService {
   constructor(@InjectModel(Task.name) private readonly model: Model<Task>) {}
 
   async listTasks(): Promise<Task[]> {
-    return this.model.find();
+    return this.model.find().sort({ createdAt: 'ascending' }).exec();
   }
 
   async getTask(id: string): Promise<Task> {
@@ -182,5 +182,26 @@ export class TaskService {
     );
 
     return this.model.find().sort({ position: 1 });
+  }
+
+  async listKanbanTasks(): Promise<Task[]> {
+    const tasks: Task[] = [];
+
+    const pendingTasks = await this.model
+      .find({ status: TaskStatus.PENDING })
+      .limit(5);
+    tasks.push(...pendingTasks);
+
+    const inProgressTasks = await this.model
+      .find({ status: TaskStatus.IN_PROGRESS })
+      .limit(5);
+    tasks.push(...inProgressTasks);
+
+    const completedTasks = await this.model
+      .find({ status: TaskStatus.COMPLETED })
+      .limit(5);
+    tasks.push(...completedTasks);
+
+    return tasks;
   }
 }
