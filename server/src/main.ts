@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,11 @@ async function bootstrap() {
       },
     }),
   );
+
+  const swagConfig = new DocumentBuilder().build();
+
+  const document = SwaggerModule.createDocument(app, swagConfig);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(4000);
 }
